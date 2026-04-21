@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruit Scramble Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="game-wrapper">
+        <section class="game-card">
+            <h1>WORD SCRAMBLE GAME</h1>
+            
+            <p>Try to guess the fruit!</p>
+            
+            <h2 id="scrambledWord"></h2>
+            
+            <div class="input-container">
+                <input type="text" id="guess" placeholder="Enter your guess here">
+            </div>
+
+            <div class="button-group">
+                <button id="checkAnswer">Check Answer</button>
+                <button id="newWord">New Word</button>
+            </div>
+
+            <div class="image-reveal">
+                <img id="fruitImage" src="" alt="Fruit Result">
+            </div>
+
+            <div id="result"></div>
+        </section>
+    </main> 
+
+    <script>
+        // Data mapping based on your uploaded file list 
+        const fruitData = [
+            { name: "Apple", img: "assets/Apple.jpg" },
+            { name: "Blueberry", img: "assets/Blueberry.jpg" },
+            { name: "Kiwi", img: "assets/Kiwi fruit.jpg" },
+            { name: "Orange", img: "assets/Orange.jpg" },
+            { name: "Strawberry", img: "assets/Strawberry.jpg" }
+        ];
+
+        let currentFruit = null;
+
+        document.getElementById("checkAnswer").addEventListener("click", checkAnswer);
+        document.getElementById("newWord").addEventListener("click", newWord);
+
+        function newWord() {
+            // Select random fruit object
+            const randomIndex = Math.floor(Math.random() * fruitData.length);
+            currentFruit = fruitData[randomIndex];
+            
+            // Scramble and display
+            document.getElementById("scrambledWord").innerText = scrambleWord(currentFruit.name).toLowerCase();
+            
+            // Reset UI
+            document.getElementById("result").innerText = "";
+            document.getElementById("guess").value = "";
+            const fruitImg = document.getElementById("fruitImage");
+            fruitImg.style.display = "none";
+            fruitImg.src = "";
+        }
+
+        function scrambleWord(word) {
+            let scrambled = word.split(""); 
+            for (let i = scrambled.length - 1; i > 0; i--) {
+                const randomIndex = Math.floor(Math.random() * (i + 1));
+                [scrambled[i], scrambled[randomIndex]] = [scrambled[randomIndex], scrambled[i]]; 
+            }
+            return scrambled.join(""); 
+        }
+
+        function checkAnswer() {
+            const userGuess = document.getElementById("guess").value;
+            const resultDiv = document.getElementById("result");
+            const fruitImg = document.getElementById("fruitImage");
+
+            if (userGuess.toLowerCase() === currentFruit.name.toLowerCase()) {
+                resultDiv.innerText = "Correct! Well done!";
+                resultDiv.style.color = "green";
+                
+                // Reveal the corresponding fruit image [cite: 380]
+                fruitImg.src = currentFruit.img;
+                fruitImg.style.display = "block";
+            } else {
+                resultDiv.innerText = "Wrong! Try again!";
+                resultDiv.style.color = "red";
+                fruitImg.style.display = "none";
+            }
+        }
+
+        // Start game
+        newWord();
+    </script>
+</body>
+</html>
